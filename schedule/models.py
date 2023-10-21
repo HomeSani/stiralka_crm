@@ -47,4 +47,4 @@ class Settings(models.Model):
         verbose_name_plural = 'Настройки'
 
     def __str__(self) -> str:
-        return self.Meta.verbose_name
+        return 'Настройки'
