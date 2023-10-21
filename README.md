@@ -1,3 +1,14 @@
+## Start
+- Clone repo:
+```shell
+git clone git@github.com:HomeSani/stiralka_crm.git
+```
+- Install dependencies:
+```shell
+poetry install
+```
+- Setup [pre-commit](#pre-commit)
+
 ## Docs
 **Recommendation: USE PyCharm**
 
