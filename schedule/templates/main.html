@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="keywords" content="Расписание,стиралки,ИКСиБ"/>
+    <meta name="description" content="Расписание стиралки ИКСиБ"/>
+    <title>Расписание стиралки ИКСиБ</title>
+</head>
+<style>
+    .accordion {
+        font-size: 18px;
+        background-color: #eee;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        outline: none;
+        transition: 0.4s;
+    }
+
+    .active, .accordion:hover {
+        background-color: #ccc;
+    }
+
+    .panel {
+        padding: 0 18px;
+        background-color: white;
+        display: none;
+        flex-wrap: wrap;
+        overflow: hidden;
+    }
+
+    .cell {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px;
+        width: 30%;
+        background-color: green;
+        margin: 5px;
+        border-radius: 10px;
+    }
+
+    .occupied {
+        background-color: grey;
+    }
+</style>
+<body>
+{% for day, cells in schedule.items %}
+    <button class="accordion">{{ day }}</button>
+    <div class="panel">
+        {% for cell in cells %}
+            {% if cell.is_occupied %}
+                <div class="cell occupied">
+                    <p>{{ cell.time_start|time:"H:i" }} - {{ cell.time_end|time:"H:i" }}</p>
+                    <p>{{ cell.username }}</p>
+                </div>
+            {% else %}
+                <div class="cell">
+                    <p>{{ cell.time_start|time:"H:i" }} - {{ cell.time_end|time:"H:i" }}</p>
+                    <p>Свободно</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endfor %}
+
+<script>
+
+    function seconds_to_h_m_format(seconds) {
+        console.log(seconds)
+    }
+
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "flex") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "flex";
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -38,6 +38,7 @@ def get_schedule() -> dict:
 
 def get_schedule_on_week(week_id: int) -> dict:
     """Get schedule on week by week_id"""
+    week_id = int(week_id)
     schedule = get_schedule()
     talons = Talon.objects.filter(week_id=46)
     cells_in_week = schedule[week_id]
@@ -52,6 +53,7 @@ def get_schedule_on_week(week_id: int) -> dict:
                 talon_time_start < cell['time_end']
                 and talon_time_end > cell['time_start']
             ):
-                cell['is_available'] = True
+                cell['is_occupied'] = True
+                cell['username'] = talon.user.username
 
     return cells_in_week
