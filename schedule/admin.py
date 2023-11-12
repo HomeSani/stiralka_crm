@@ -7,7 +7,7 @@ from schedule.models import Day, Settings, Talon
 class TalonAdminModel(admin.ModelAdmin):
     """Admin model for talon"""
 
-    list_display = ('user', 'data', 'time_start', 'time_end')
+    list_display = ('user', 'date', 'time_start', 'time_end')
 
 
 @admin.register(Day)

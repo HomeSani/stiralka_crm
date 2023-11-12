@@ -10,7 +10,7 @@ class Talon(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name='Пользователь, занявший время'
     )
-    data = models.DateField(
+    date = models.DateField(
         default=datetime.now, verbose_name='Дата дня для стирки', blank=True
     )
     week_id = models.IntegerField(default=0, blank=True)
@@ -26,13 +26,13 @@ class Talon(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         """Method calling when model be saved"""
-        self.week_id = self.data.isocalendar()[1]
-        self.day_id = self.data.weekday()
+        self.week_id = self.date.isocalendar()[1]
+        self.day_id = self.date.weekday()
         super(Talon, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
         """Return info, when called(in admin panel)"""
-        return f'Cell({self.user} - {self.data}): {self.time_start} - {self.time_end}'
+        return f'Cell({self.user} - {self.date}): {self.time_start} - {self.time_end}'
 
 
 class Day(models.Model):
