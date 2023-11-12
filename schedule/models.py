@@ -1,25 +1,7 @@
-from datetime import time
+from datetime import datetime, time
 
 from django.contrib.auth.models import User
 from django.db import models
-
-
-class Cell(models.Model):
-    """Model for cell"""
-
-    data = models.DateField(auto_now_add=True, verbose_name='Дата дня для стирки')
-    time_start = models.TimeField(verbose_name='Начало стирки')
-    time_end = models.TimeField(verbose_name='Окончание стирки')
-
-    class Meta:
-        """Meta class for model"""
-
-        verbose_name = 'Ячейка'
-        verbose_name_plural = 'Ячейки'
-
-    def __str__(self) -> str:
-        """Return info, when called(in admin panel)"""
-        return f'Cell({self.data}): {self.time_start} - {self.time_end}'
 
 
 class Talon(models.Model):
@@ -28,7 +10,11 @@ class Talon(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name='Пользователь, занявший время'
     )
-    data = models.DateField(auto_now_add=True, verbose_name='Дата дня для стирки')
+    data = models.DateField(
+        default=datetime.now, verbose_name='Дата дня для стирки', blank=True
+    )
+    week_id = models.IntegerField(default=0, blank=True)
+    day_id = models.IntegerField(default=0, blank=True)
     time_start = models.TimeField(verbose_name='Начало стирки')
     time_end = models.TimeField(verbose_name='Окончание стирки')
 
@@ -37,6 +23,12 @@ class Talon(models.Model):
 
         verbose_name = 'Талон'
         verbose_name_plural = 'Талоны'
+
+    def save(self, *args, **kwargs) -> None:
+        """Method calling when model be saved"""
+        self.week_id = self.data.isocalendar()[1]
+        self.day_id = self.data.weekday()
+        super(Talon, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
         """Return info, when called(in admin panel)"""

@@ -1,13 +1,6 @@
 from django.contrib import admin
 
-from schedule.models import Cell, Day, Settings, Talon
-
-
-@admin.register(Cell)
-class CellAdminModel(admin.ModelAdmin):
-    """Admin model for cell"""
-
-    list_display = ('data', 'time_start', 'time_end')
+from schedule.models import Day, Settings, Talon
 
 
 @admin.register(Talon)
