@@ -1,0 +1,124 @@
+{% load schedule %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="keywords" content="schedule"/>
+    <meta name="description" content="Расписание"/>
+    <title>Расписание стиралки</title>
+</head>
+<body>
+    <style>
+
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    .accordion {
+        background-color: #eee;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        outline: none;
+        transition: 0.4s;
+    }
+
+    .active, .accordion:hover {
+        background-color: #ccc;
+    }
+
+    .panel {
+        background-color: white;
+        display: none;
+        overflow: hidden;
+    }
+
+    .cell {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 10px;
+        color: #fefefe;
+        background: #56ff4a;
+        -webkit-box-shadow: 0px 11px 32px 17px rgba(0, 0, 0, 0.22);
+        -moz-box-shadow: 0px 11px 32px 17px rgba(0, 0, 0, 0.22);
+        box-shadow: 0px 11px 32px 17px rgba(0, 0, 0, 0.22);
+    }
+
+    .cell.occupied {
+        background: #ff4a4a;
+    }
+    </style>
+
+    {% csrf_token %}
+
+    {% for day in schedule.keys %}
+        <button class="accordion">{{ day }}</button>
+        <div class="panel">
+            {% for cell in schedule|get_item:day %}
+                {% if not cell.is_occupied %}
+                    <div class="cell" id="cell_{{ cell.pk }}">
+                        <p>{{ cell.start_time }} - {{ cell.end_time }}</p>
+                        <button onclick="orderCell({{ cell.pk }})">Занять</button>
+                    </div>
+                {% else %}
+                    <div class="cell occupied">
+                        <p>{{ cell.start_time }} - {{ cell.end_time }}</p>
+                        <p>Занято {{ user.username }}</p>
+                    </div>
+                {% endif %}
+          {% endfor %}
+        </div>
+    {% endfor %}
+
+    <script>
+        function orderCell(cellId) {
+            let cell_element = document.querySelector("#cell_" + cellId)
+            let csrfToken = document.querySelector("input[name=csrfmiddlewaretoken]").value
+
+            fetch({{ request.path }}, {
+                method: "POST",
+                referrerPolicy: "no-referrer",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    cell_id: cellId,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                }),
+            }).then(function (response) {
+                if (response.status === 200) {
+                    cell_element.classList.add("occupied");
+                    cell_element.querySelector("button").remove();
+                    let occupied_label = document.createElement('p');
+                    occupied_label.innerHTML = "Занято {{ user.username }}";
+                    cell_element.appendChild(occupied_label);
+                }
+            })
+
+        }
+
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+          acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+              panel.style.display = "none";
+            } else {
+              panel.style.display = "block";
+            }
+          });
+        }
+    </script>
+</body>
+</html>
