@@ -75,6 +75,4 @@ class Cell(models.Model):
         verbose_name_plural = 'Ячейки'
 
     def __str__(self) -> str:
-        return (
-            f'{self.user.username} - {self.date} - {self.start_time} - {self.end_time}'
-        )
+        return f'{self.user} - {self.date} - {self.start_time} - {self.end_time}'
