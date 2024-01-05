@@ -44,14 +44,17 @@ class Settings(models.Model):
         related_name='settings',
         verbose_name='Дни для стирки',
     )
-    wash_duration = models.DurationField(verbose_name='Время стирки для одной ячейки')
+    wash_duration = models.DurationField(
+        verbose_name='Время стирки для одной ячейки',
+        default='01:30:00',
+    )
 
     class Meta:
         verbose_name = 'Настройка'
         verbose_name_plural = 'Настройка'
 
     def __str__(self) -> str:
-        return self.Meta.verbose_name
+        return 'Настройка'
 
 
 class Cell(models.Model):
