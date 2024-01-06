@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  app:
+    hostname: app
+    build: .
+    command: poetry run python manage.py runserver 0.0.0.0:8080
+    volumes:
+      - .:/code
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+    ports:
+      - '8080:8080'
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  db:
+    image: postgres:15.4
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+
+  rabbit:
+      hostname: rabbit
+      image: rabbitmq:3.12.12
+      environment:
+          - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+          - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+      ports:
+          - "5672:5672"
+          - "15672:15672"
+      env_file:
+        - .env
+
+  celery:
+    build: .
+    command: poetry run celery -A root worker
+    volumes:
+      - .:/code
+    links:
+      - rabbit
+    depends_on:
+      - app
+      - rabbit
