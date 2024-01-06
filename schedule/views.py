@@ -45,7 +45,7 @@ class ScheduleView(View):
             return HttpResponse(status=400)
 
         if user.restriction_on_use_count <= 0:
-            return HttpResponse('restriction_on_use_count is low')
+            return HttpResponse('restriction_on_use_count is low', status=300)
 
         cell.user = request.user
         cell.is_occupied = True
