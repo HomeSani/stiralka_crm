@@ -7,6 +7,9 @@
     <meta name="keywords" content="schedule"/>
     <meta name="description" content="Расписание"/>
     <title>Расписание стиралки</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&display=swap" rel="stylesheet"/>
 </head>
 <body>
     <style>
@@ -14,11 +17,15 @@
     * {
         padding: 0;
         margin: 0;
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    body {
+        background: #ECF0F1;
     }
 
     .accordion {
-        background-color: #eee;
-        color: #444;
+        background-color: #E7E5E4;
         cursor: pointer;
         padding: 18px;
         width: 100%;
@@ -26,10 +33,13 @@
         border: none;
         outline: none;
         transition: 0.4s;
+        height: 100px;
+        font-size: 24px;
+        color: #A8A29E;
     }
 
     .active, .accordion:hover {
-        background-color: #ccc;
+        background-color: #E7E5E4;
     }
 
     .panel {
@@ -42,36 +52,60 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 10px;
+        height: 120px;
         color: #fefefe;
-        background: #56ff4a;
-        -webkit-box-shadow: 0px 11px 32px 17px rgba(0, 0, 0, 0.22);
-        -moz-box-shadow: 0px 11px 32px 17px rgba(0, 0, 0, 0.22);
-        box-shadow: 0px 11px 32px 17px rgba(0, 0, 0, 0.22);
+        font-size: 18px;
+        background: #FBBF24;
+        position: relative;
+        -webkit-box-shadow: 5px 5px 40px 10px rgba(41, 37, 36, 0.04);
+        -moz-box-shadow: 5px 5px 40px 10px rgba(41, 37, 36, 0.04);
+        box-shadow: 5px 5px 40px 10px rgba(41, 37, 36, 0.04);
     }
 
-    .cell.occupied {
-        background: #ff4a4a;
+    .cell .clock {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        background: #22D3EE;
+        height: 100%;
+        width: 30%;
     }
+
+    .cell button {
+        width: 30%;
+        height: 100%;
+        border: 0;
+        background: #4ADE80;
+        color: #fefefe;
+        font-size: 18px;
+    }
+
+    .cell button.occupied {
+        background: #FB7185;
+    }
+
     </style>
 
     {% csrf_token %}
 
     {% for date in schedule.keys %}
-        <button class="accordion">{{ date }}</button>
+        <button class="accordion active">{{ date }}</button>
         <div class="panel">
             {% for cell in schedule|get_item:date %}
-                {% if not cell.is_occupied %}
-                    <div class="cell" id="cell_{{ cell.pk }}">
-                        <p>{{ cell.start_time }} - {{ cell.end_time }}</p>
+                <div class="cell" id="cell_{{ cell.pk }}">
+                    <div class="clock">
+                        <p>{{ cell.start_time }}</p>
+                        <p>-</p>
+                        <p>{{ cell.end_time }}</p>
+                    </div>
+                    <p>Стиралка Иксиба</p>
+                    {% if not cell.is_occupied %}
                         <button onclick="orderCell({{ cell.pk }})">Занять</button>
-                    </div>
-                {% else %}
-                    <div class="cell occupied">
-                        <p>{{ cell.start_time }} - {{ cell.end_time }}</p>
-                        <p>Занято {{ user.username }}</p>
-                    </div>
-                {% endif %}
+                    {% else %}
+                        <button class="occupied">Занято {{ user.telegram_username }}</button>
+                    {% endif %}
+                </div>
           {% endfor %}
         </div>
     {% endfor %}
