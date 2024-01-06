@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views import View
 
 from schedule.models import Cell
+from users.models import User
 
 
 class ScheduleView(View):
@@ -33,6 +34,7 @@ class ScheduleView(View):
     def post(self, request: HttpRequest) -> HttpResponse:
         json_data = json.loads(request.body)
         cell_id = json_data.get('cell_id')
+        user: User = request.user
 
         if cell_id is None:
             return HttpResponse(status=400)
@@ -42,8 +44,14 @@ class ScheduleView(View):
         if cell is None:
             return HttpResponse(status=400)
 
+        if user.restriction_on_use_count <= 0:
+            return HttpResponse('restriction_on_use_count is low')
+
         cell.user = request.user
         cell.is_occupied = True
         cell.save()
+
+        user.restriction_on_use_count -= 1
+        user.save()
 
         return HttpResponse(status=200)
