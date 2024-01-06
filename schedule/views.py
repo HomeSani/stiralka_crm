@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views import View
 
-from schedule.models import Cell, Day
+from schedule.models import Cell
 
 
 class ScheduleView(View):
@@ -13,17 +13,16 @@ class ScheduleView(View):
         schedule = {}
 
         for cell in cells:
-            week_day_index = cell.date.weekday()
-            day_name = Day.DAY_CHOICES[week_day_index][1]
+            date_str = cell.date.strftime("%m-%d-%Y")
 
-            old_cells = schedule.get(day_name)
+            old_cells = schedule.get(date_str)
 
             if old_cells is None:
-                schedule[day_name] = [cell]
+                schedule[date_str] = [cell]
                 continue
 
             old_cells.append(cell)
-            schedule[day_name] = old_cells
+            schedule[date_str] = old_cells
 
         context = {
             'schedule': schedule,

@@ -57,10 +57,10 @@
 
     {% csrf_token %}
 
-    {% for day in schedule.keys %}
-        <button class="accordion">{{ day }}</button>
+    {% for date in schedule.keys %}
+        <button class="accordion">{{ date }}</button>
         <div class="panel">
-            {% for cell in schedule|get_item:day %}
+            {% for cell in schedule|get_item:date %}
                 {% if not cell.is_occupied %}
                     <div class="cell" id="cell_{{ cell.pk }}">
                         <p>{{ cell.start_time }} - {{ cell.end_time }}</p>
