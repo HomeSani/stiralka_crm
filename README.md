@@ -4,7 +4,7 @@
 ### Run project
 1. Clone repo:
 ```shell
-git clone git@github.com:HomeSani/stiralka_crm.git
+git clone https://github.com/HomeSani/stiralka_crm.git
 ```
 2. Set environment variables:
 ```shell
