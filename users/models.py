@@ -5,6 +5,7 @@ from django.db import models
 class User(AbstractUser):
     telegram_uuid = models.CharField(max_length=255, blank=True, null=True)
     telegram_username = models.CharField(max_length=255, blank=True, null=True)
+    restriction_on_use_count = models.PositiveIntegerField(default=2)
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='users',
