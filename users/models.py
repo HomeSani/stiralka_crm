@@ -3,7 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    telegram_uuid = models.PositiveIntegerField(null=True)
+    telegram_uuid = models.CharField(max_length=255, blank=True, null=True)
     telegram_username = models.CharField(max_length=255, blank=True, null=True)
     groups = models.ManyToManyField(
         'auth.Group',
