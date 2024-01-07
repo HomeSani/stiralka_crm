@@ -43,7 +43,7 @@ services:
 
   celery:
     build: .
-    command: poetry run celery -A root worker
+    command: poetry run celery -A project_root worker
     volumes:
       - .:/code
     links:
@@ -51,3 +51,13 @@ services:
     depends_on:
       - app
       - rabbit
+
+  beat:
+    build: .
+    command: poetry run celery -A project_root beat
+    volumes:
+      - .:/code
+    links:
+      - rabbit
+    depends_on:
+      - celery
