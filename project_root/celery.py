@@ -1,19 +1,24 @@
 import os
 
 from celery import Celery
+from celery.schedules import crontab
 
-# Set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project_root.settings')
 
 app = Celery('project_root', broker_url='amqp://admin:123@rabbit:5672/')
 
-# Using a string here means the worker doesn't have to serialize
-# the configuration object to child processes.
-# - namespace='CELERY' means all celery-related configuration keys
-#   should have a `CELERY_` prefix.
 app.config_from_object('django.conf:settings', namespace='CELERY')
-
-# Load task modules from all registered Django apps.
 app.autodiscover_tasks()
 
-app.conf.beat_schedule = {}
+app.conf.beat_schedule = {
+    'create_cells_for_two_weeks_task': {
+        'task': 'schedule.tasks.create_cells_for_two_weeks_task',
+        'schedule': crontab(minute='0', hour='0', day_of_month='*/14'),
+        'args': (),
+    },
+    'set_for_all_users_restricton_on_use_task': {
+        'task': 'schedule.tasks.set_for_all_users_restricton_on_use_task',
+        'schedule': crontab(minute='0', hour='0', day_of_week='1'),
+        'args': (),
+    },
+}
