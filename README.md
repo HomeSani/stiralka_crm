@@ -18,7 +18,7 @@ Variables:
   - `DB_NAME` - database name
   - `DB_USER` - database username
   - `DB_PASS` - password for database user
-  - `DB_HOST` - host for database (`db`)
+  - `DB_HOST` - host for database (`0.0.0.0`)
   - `DB_PORT` - port for database (`5432`)
 * RabbitMQ:
   - `RABBITMQ_USER` - username for rabbitmq
