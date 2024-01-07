@@ -23,6 +23,8 @@ Variables:
 * RabbitMQ:
   - `RABBITMQ_USER` - username for rabbitmq
   - `RABBITMQ_PASS` - password for rabbitmq user
+* Celery:
+  - `CELERY_BROKER_URL` - broker url for celery, **using rabbit** (`amqp://user:mypass@rabbit:5672/`)
 3. Build image:
 ```shell
 docker-compose build
